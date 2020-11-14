@@ -3,6 +3,17 @@ Script to export playlist files (e.g. m3u) from Audirvana with PowerShell.
 
 Audirvana is an incredible audio player I just discovered a few days before writing this script: https://audirvana.com/
 
+# Why would I need this?
+I used iTunes for years, but every device I want my music synced to is not an Apple product.
+After many years of using third party software (which always had at least one downside), I wrote my own PowerShell script that syncs my music from iTunes to my Android phone and other devices.
+
+A few days before I posted this script, I discovered Audirvana, fell in love with it and decided to use it instead of iTunes.
+
+So far I used this (actually great) tool to export playlists from iTunes via CLI: http://www.ericdaugherty.com/dev/itunesexport
+
+With Audirvana I needed something new to export its playlists. Since it uses a SQLite database, it was very easy from the start to export its playlists.
+Now I'm able to continue using my music sync script.
+
 # Example
 ```
 PS C:\> Export-AudirvanaPlaylists -pDestination "D:\Music\Playlists" -sDB "C:\Users\WhereTheTimeWent\AudirvanaPlusDatabaseV2.sqlite"
