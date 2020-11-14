@@ -21,7 +21,7 @@
 	.NOTES
 		This script needs PSSQLite to access Audirvana's database. To install, launch PowerShell as administrator and run: Install-Module PSSQLite
 		Author: WhereTheTimeWent
-		GitHub: 
+		GitHub: https://github.com/WhereTheTimeWent/AudirvanaToolkit
 #>
 function Export-AudirvanaPlaylists {
 	#Requires -Module PSSQLite
