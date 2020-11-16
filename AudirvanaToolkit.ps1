@@ -1,4 +1,5 @@
-﻿<#
+﻿using namespace System.IO
+<#
 	.SYNOPSIS
 		Exports playlist files as text files from Audirvana
 	.DESCRIPTION
