@@ -1,5 +1,5 @@
-﻿using namespace System.IO
- $nl = [Environment]::NewLine
+using namespace System.IO
+$nl = [Environment]::NewLine
 <#
 	.SYNOPSIS
 		Exports playlist files as text files from Audirvana
