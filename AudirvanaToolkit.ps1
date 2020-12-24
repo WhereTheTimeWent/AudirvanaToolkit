@@ -43,6 +43,27 @@ function Export-AudirvanaPlaylists {
 		[string]
 		$sDB
 	)
+	function Write-AudirvanaPlaylists {
+		param(
+			[Parameter(Mandatory = $true)]
+			[string]
+			$sSQL,
+			[Parameter(Mandatory = $true)]
+			[string]
+			$sPlaylistName
+		)
+		try {
+			$aPlaylist = Invoke-SqliteQuery -Query $sSQL -DataSource $sDB			
+		} catch {
+			Write-Error ("Couldn't get tracks from playlist '" + $sPlaylistName + "'")
+		}
+		[string]$sPlaylist = $null
+		foreach($Song in $aPlaylist) {
+			$sPlaylist += [Path]::Combine($Song.location_dev_uuid, $Song.location_rel_path) + $nl
+		}
+		$fDestination = [Path]::Combine($pDestination, $sPlaylistName + $sFileExtension)
+		$sPlaylist.Trim() | Out-File $fDestination -Encoding utf8
+	}
 	if(Test-Path -LiteralPath $sDB) {
 		Copy-Item $sDB $env:TMP
 		$sDB = [Path]::Combine($env:TMP, [Path]::GetFileName($sDB))
@@ -69,16 +90,11 @@ function Export-AudirvanaPlaylists {
 		$sSQL += "FROM TRACKS" + $nl
 		$sSQL += "INNER JOIN PLAYLISTS_TRACKS ON TRACKS.track_id = PLAYLISTS_TRACKS.track_id" + $nl
 		$sSQL += "AND playlist_id = " + $Playlist.playlist_id + ";"
-		try {
-			$aPlaylist = Invoke-SqliteQuery -Query $sSQL -DataSource $sDB			
-		} catch {
-			Write-Error ("Couldn't get tracks from playlist '" + $Playlist.title + "'")
-		}
-		[string]$sPlaylist = $null
-		foreach($Song in $aPlaylist) {
-			$sPlaylist += [Path]::Combine($Song.location_dev_uuid, $Song.location_rel_path) + $nl
-		}
-		$fDestination = [Path]::Combine($pDestination, $Playlist.title + $sFileExtension)
-		$sPlaylist.Trim() | Out-File $fDestination -Encoding utf8
+		Write-AudirvanaPlaylists -sSQL $sSQL -sPlaylistName $Playlist.title
 	}
+	# Export all songs that are not DSD to Library.*
+	[string]$sSQL = "SELECT TRACKS.location_dev_uuid, TRACKS.location_rel_path" + $nl
+	$sSQL += "FROM TRACKS" + $nl
+	$sSQL += "WHERE TRACKS.location_rel_path NOT LIKE '%.dsf' AND TRACKS.location_rel_path NOT LIKE '%.iso';"
+	Write-AudirvanaPlaylists -sSQL $sSQL -sPlaylistName "Library"
 }
